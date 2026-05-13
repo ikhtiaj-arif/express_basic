@@ -66,13 +66,11 @@ app.post("/api/users", async (req: Request, res: Response) => {
       [name, email, age, password],
     );
 
-    res
-      .status(201)
-      .json({
-        success: true,
-        message: "User Created Successfully!",
-        data: result.rows[0],
-      });
+    res.status(201).json({
+      success: true,
+      message: "User Created Successfully!",
+      data: result.rows[0],
+    });
   } catch (error: any) {
     res.status(500).json({ success: false, message: error.message, error });
   }
@@ -88,6 +86,33 @@ app.get("/api/users", async (req: Request, res: Response) => {
       success: true,
       message: "Users retrieved successfully!",
       data: result.rows,
+    });
+  } catch (error: any) {
+    res.status(500).json({ success: false, message: error.message, error });
+  }
+});
+
+app.get("/api/users/:id", async (req: Request, res: Response) => {
+  const { id } = req.params;
+
+  try {
+    const result = await pool.query(
+      `
+            SELECT * FROM users WHERE id=$1
+            `,
+      [id],
+    );
+
+    if (result.rows.length === 0) {
+      res
+        .status(404)
+        .json({ success: false, message: "User Not Found!", data: {} });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "User retrieved successfully!",
+      data: result.rows[0],
     });
   } catch (error: any) {
     res.status(500).json({ success: false, message: error.message, error });
