@@ -7,3 +7,10 @@
 6.  connect db using pool.query inside an async function dbInit
 7.  create new table users await pool.query(`
     CREATE TABLE IF NOT EXISTS users()`)
+8. create user using insert:   const result = await pool.query(
+      `
+    INSERT INTO users (name, email, age, password) VALUES($1,$2,$3,$4) RETURNING *
+    
+    `,
+      [name, email, age, password],
+    );
