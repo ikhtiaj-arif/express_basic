@@ -1,4 +1,5 @@
 import express, {
+  response,
   type Application,
   type Request,
   type Response,
@@ -52,7 +53,7 @@ app.use(express.text());
 //? extended true inside urlencoded allows to receive nested data
 app.use(express.urlencoded());
 
-app.post("/", async (req: Request, res: Response) => {
+app.post("/api/users", async (req: Request, res: Response) => {
   //   console.log(req.body);
   const { name, email, age, password } = req.body;
 
@@ -67,9 +68,29 @@ app.post("/", async (req: Request, res: Response) => {
 
     res
       .status(201)
-      .json({ message: "User Created Successfully!", data: result.rows[0] });
+      .json({
+        success: true,
+        message: "User Created Successfully!",
+        data: result.rows[0],
+      });
   } catch (error: any) {
-    res.status(500).json({ message: error.message, error });
+    res.status(500).json({ success: false, message: error.message, error });
+  }
+});
+
+app.get("/api/users", async (req: Request, res: Response) => {
+  try {
+    const result = await pool.query(`
+            SELECT * FROM users
+            `);
+
+    res.status(200).json({
+      success: true,
+      message: "Users retrieved successfully!",
+      data: result.rows,
+    });
+  } catch (error: any) {
+    res.status(500).json({ success: false, message: error.message, error });
   }
 });
 
