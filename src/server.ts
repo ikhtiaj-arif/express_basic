@@ -4,14 +4,14 @@ import express, {
   type Response,
 } from "express";
 import { Pool } from "pg";
-import { PORT } from "./config";
+import config from "./config";
 
 const app: Application = express();
-const port = 3300;
+const port = config.port;
+const connection_string = config.connection_string;
 
 const pool = new Pool({
-  connectionString:
-    "",
+  connectionString: connection_string,
 });
 
 const dbInit = async () => {
@@ -40,7 +40,7 @@ app.get("/", (req: Request, res: Response) => {
   res.status(200).json({
     message: "Express Server running!",
     author: "Ikhtiaj Arif",
-    port: PORT,
+    port: port,
   });
 });
 

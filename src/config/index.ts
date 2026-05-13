@@ -1,5 +1,10 @@
 import dotenv from "dotenv";
+import path from "path";
 
-dotenv.config({ path: "/custom/path/to/.env" });
+dotenv.config({ path: path.join(process.cwd(), ".env") });
 
-export const PORT = process.env.PORT || 3300;
+const config = {
+  connection_string: process.env.CONNECTIONSTRING as string,
+  port: process.env.PORT,
+};
+export default config;
