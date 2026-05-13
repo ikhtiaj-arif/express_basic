@@ -6,11 +6,18 @@
     SQL data types: boolean, numbers, binary, date/time, json, character, UUID, array, xml
 6.  connect db using pool.query inside an async function dbInit
 7.  create new table users await pool.query(`
-    CREATE TABLE IF NOT EXISTS users()`)
-8. create user using insert:   const result = await pool.query(
-      `
-    INSERT INTO users (name, email, age, password) VALUES($1,$2,$3,$4) RETURNING *
-    
+CREATE TABLE IF NOT EXISTS users()`)
+8.  create user using insert: const result = await pool.query(
+    `
+    INSERT INTO users (name, email, age, password) VALUES($1,$2,$3,$4) RETURNING \*
+
     `,
-      [name, email, age, password],
+    [name, email, age, password],
+    );
+
+9.  Retrieve users --> to retrieve user using id use WHERE claws. TO retrieve all dont use WHERE Claws
+    const result = await pool.query(
+    `         SELECT * FROM users WHERE id=$1
+    `,
+    [id],
     );
