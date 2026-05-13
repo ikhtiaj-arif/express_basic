@@ -6,6 +6,7 @@ import express, {
 } from "express";
 import { Pool } from "pg";
 import config from "./config";
+import { sendResponse } from "./utils/sendResponse";
 
 const app: Application = express();
 const port = config.port;
@@ -65,14 +66,15 @@ app.post("/api/users", async (req: Request, res: Response) => {
     `,
       [name, email, age, password],
     );
-
-    res.status(201).json({
-      success: true,
-      message: "User Created Successfully!",
-      data: result.rows[0],
-    });
+    sendResponse(res, 201, true, "User Created Successfully!", result.rows[0]);
+    // res.status(201).json({
+    //   success: true,
+    //   message: "User Created Successfully!",
+    //   data: result.rows[0],
+    // });
   } catch (error: any) {
-    res.status(500).json({ success: false, message: error.message, error });
+    sendResponse(res, 500, false, error.message, error);
+    // res.status(500).json({ success: false, message: error.message, error });
   }
 });
 
@@ -81,14 +83,15 @@ app.get("/api/users", async (req: Request, res: Response) => {
     const result = await pool.query(`
             SELECT * FROM users
             `);
-
-    res.status(200).json({
-      success: true,
-      message: "Users retrieved successfully!",
-      data: result.rows,
-    });
+    sendResponse(res, 200, true, "User Retrieved Successfully!", result.rows);
+    // res.status(200).json({
+    //   success: true,
+    //   message: "Users retrieved successfully!",
+    //   data: result.rows,
+    // });
   } catch (error: any) {
-    res.status(500).json({ success: false, message: error.message, error });
+    sendResponse(res, 500, false, error.message, error);
+    // res.status(500).json({ success: false, message: error.message, error });
   }
 });
 
@@ -104,18 +107,26 @@ app.get("/api/users/:id", async (req: Request, res: Response) => {
     );
 
     if (result.rows.length === 0) {
-      res
-        .status(404)
-        .json({ success: false, message: "User Not Found!", data: {} });
+      sendResponse(res, 404, false, "User Not Found!", {});
+      //   res
+      //     .status(404)
+      //     .json({ success: false, message: "User Not Found!", data: {} });
     }
-
-    res.status(200).json({
-      success: true,
-      message: "User retrieved successfully!",
-      data: result.rows[0],
-    });
+    sendResponse(
+      res,
+      200,
+      true,
+      "User Retrieved Successfully!",
+      result.rows[0],
+    );
+    // res.status(200).json({
+    //   success: true,
+    //   message: "User retrieved successfully!",
+    //   data: result.rows[0],
+    // });
   } catch (error: any) {
-    res.status(500).json({ success: false, message: error.message, error });
+    sendResponse(res, 500, false, error.message, error);
+    // res.status(500).json({ success: false, message: error.message, error });
   }
 });
 
@@ -139,18 +150,20 @@ app.put("/api/users/:id", async (req: Request, res: Response) => {
     );
 
     if (result.rows.length === 0) {
-      res
-        .status(404)
-        .json({ success: false, message: "User Not Found!", data: {} });
+      sendResponse(res, 404, false, "User Not Found!", {});
+      //   res
+      //     .status(404)
+      //     .json({ success: false, message: "User Not Found!", data: {} });
     }
-
-    res.status(200).json({
-      success: true,
-      message: "User updated successfully!",
-      data: result.rows[0],
-    });
+    sendResponse(res, 200, true, "User Updated Successfully!", result.rows[0]);
+    // res.status(200).json({
+    //   success: true,
+    //   message: "User updated successfully!",
+    //   data: result.rows[0],
+    // });
   } catch (error: any) {
-    res.status(500).json({ success: false, message: error.message, error });
+    sendResponse(res, 500, false, error.message, error);
+    // res.status(500).json({ success: false, message: error.message, error });
   }
 });
 
@@ -164,18 +177,20 @@ app.delete("/api/users/:id", async (req: Request, res: Response) => {
       [id],
     );
     if (result.rowCount === 0) {
-      res
-        .status(404)
-        .json({ success: false, message: "User Not Found!", data: {} });
+      sendResponse(res, 404, false, "User Not Found!", {});
+      //   res
+      //     .status(404)
+      //     .json({ success: false, message: "User Not Found!", data: {} });
     }
-
-    res.status(200).json({
-      success: true,
-      message: "User deleted successfully!",
-      data: {},
-    });
+    sendResponse(res, 200, true, "User Deleted Successfully!", result.rows[0]);
+    // res.status(200).json({
+    //   success: true,
+    //   message: "User deleted successfully!",
+    //   data: {},
+    // });
   } catch (error: any) {
-    res.status(500).json({ success: false, message: error.message, error });
+    sendResponse(res, 500, false, error.message, error);
+    // res.status(500).json({ success: false, message: error.message, error });
   }
 });
 
