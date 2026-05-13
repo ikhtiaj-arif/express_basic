@@ -137,7 +137,6 @@ app.put("/api/users/:id", async (req: Request, res: Response) => {
             `,
       [name, age, password, is_active, id],
     );
-  
 
     if (result.rows.length === 0) {
       res
@@ -147,8 +146,33 @@ app.put("/api/users/:id", async (req: Request, res: Response) => {
 
     res.status(200).json({
       success: true,
-      message: "User retrieved successfully!",
+      message: "User updated successfully!",
       data: result.rows[0],
+    });
+  } catch (error: any) {
+    res.status(500).json({ success: false, message: error.message, error });
+  }
+});
+
+app.delete("/api/users/:id", async (req: Request, res: Response) => {
+  const { id } = req.params;
+  try {
+    const result = await pool.query(
+      `
+            DELETE FROM users WHERE id=$1  
+            `,
+      [id],
+    );
+    if (result.rowCount === 0) {
+      res
+        .status(404)
+        .json({ success: false, message: "User Not Found!", data: {} });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "User deleted successfully!",
+      data: {},
     });
   } catch (error: any) {
     res.status(500).json({ success: false, message: error.message, error });
