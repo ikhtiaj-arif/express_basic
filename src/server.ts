@@ -3,9 +3,38 @@ import express, {
   type Request,
   type Response,
 } from "express";
+import { Pool } from "pg";
 import { PORT } from "./config";
+
 const app: Application = express();
 const port = 3300;
+
+const pool = new Pool({
+  connectionString:
+    "",
+});
+
+const dbInit = async () => {
+  try {
+    await pool.query(`
+        CREATE TABLE IF NOT EXISTS users(
+        id SERIAL PRIMARY KEY,
+        name VARCHAR(20),
+        email VARCHAR(20) NOT NULL,
+        password VARCHAR(20) NOT NULL,
+        is_active BOOLEAN DEFAULT true,
+        age INT,
+
+        created_at TIMESTAMP DEFAULT NOW(),
+        updated_at TIMESTAMP DEFAULT NOW()
+        )
+        `);
+    console.log("db connected successfully");
+  } catch (error) {
+    console.log(error);
+  }
+};
+dbInit();
 
 app.get("/", (req: Request, res: Response) => {
   res.status(200).json({
