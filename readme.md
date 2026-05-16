@@ -39,3 +39,6 @@ CREATE TABLE IF NOT EXISTS users()`)
      - separate db connection to db folder
      - all app logic moved to app.ts
      - server only handles server connection
+
+     --> when user hits api/users, we create separate router and attach it to app using middleware.
+     handled method and go to controller, execute db query inside service.

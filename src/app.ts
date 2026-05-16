@@ -8,6 +8,7 @@ import { Pool } from "pg";
 import config from "./config";
 import { sendResponse } from "./utils/sendResponse";
 import { dbInit, pool } from "./db";
+import { userRoutes } from "./modules/user/user.route";
 
 const app: Application = express();
 const port = config.port;
@@ -32,29 +33,8 @@ app.use(express.text());
 //? extended true inside urlencoded allows to receive nested data
 app.use(express.urlencoded());
 
-app.post("/api/users", async (req: Request, res: Response) => {
-  //   console.log(req.body);
-  const { name, email, age, password } = req.body;
+app.use('/api/users', userRoutes)
 
-  try {
-    const result = await pool.query(
-      `
-    INSERT INTO users (name, email, age, password) VALUES($1,$2,$3,$4) RETURNING *
-    
-    `,
-      [name, email, age, password],
-    );
-    sendResponse(res, 201, true, "User Created Successfully!", result.rows[0]);
-    // res.status(201).json({
-    //   success: true,
-    //   message: "User Created Successfully!",
-    //   data: result.rows[0],
-    // });
-  } catch (error: any) {
-    sendResponse(res, 500, false, error.message, error);
-    // res.status(500).json({ success: false, message: error.message, error });
-  }
-});
 
 app.get("/api/users", async (req: Request, res: Response) => {
   try {
