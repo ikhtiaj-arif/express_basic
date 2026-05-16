@@ -9,6 +9,8 @@ import config from "./config";
 import { sendResponse } from "./utils/sendResponse";
 import { dbInit, pool } from "./db";
 import { userRoutes } from "./modules/user/user.route";
+import { profile } from "node:console";
+import { profileRoute } from "./modules/profile/profile.route";
 
 const app: Application = express();
 const port = config.port;
@@ -34,6 +36,7 @@ app.use(express.text());
 app.use(express.urlencoded());
 
 app.use('/api/users', userRoutes)
+app.use('/api/profile', profileRoute)
 
 
 
