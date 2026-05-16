@@ -1,0 +1,175 @@
+import express, {
+  response,
+  type Application,
+  type Request,
+  type Response,
+} from "express";
+import { Pool } from "pg";
+import config from "./config";
+import { sendResponse } from "./utils/sendResponse";
+import { dbInit, pool } from "./db";
+
+const app: Application = express();
+const port = config.port;
+const connection_string = config.connection_string;
+
+
+
+
+app.get("/", (req: Request, res: Response) => {
+  res.status(200).json({
+    message: "Express Server running!",
+    author: "Ikhtiaj Arif",
+    port: port,
+  });
+});
+
+// this middleware allows to receive request body to json  format
+app.use(express.json());
+// this middleware allows to receive request body to text  format
+app.use(express.text());
+// this middleware allows to receive request body to encoded format
+//? extended true inside urlencoded allows to receive nested data
+app.use(express.urlencoded());
+
+app.post("/api/users", async (req: Request, res: Response) => {
+  //   console.log(req.body);
+  const { name, email, age, password } = req.body;
+
+  try {
+    const result = await pool.query(
+      `
+    INSERT INTO users (name, email, age, password) VALUES($1,$2,$3,$4) RETURNING *
+    
+    `,
+      [name, email, age, password],
+    );
+    sendResponse(res, 201, true, "User Created Successfully!", result.rows[0]);
+    // res.status(201).json({
+    //   success: true,
+    //   message: "User Created Successfully!",
+    //   data: result.rows[0],
+    // });
+  } catch (error: any) {
+    sendResponse(res, 500, false, error.message, error);
+    // res.status(500).json({ success: false, message: error.message, error });
+  }
+});
+
+app.get("/api/users", async (req: Request, res: Response) => {
+  try {
+    const result = await pool.query(`
+            SELECT * FROM users
+            `);
+    sendResponse(res, 200, true, "User Retrieved Successfully!", result.rows);
+    // res.status(200).json({
+    //   success: true,
+    //   message: "Users retrieved successfully!",
+    //   data: result.rows,
+    // });
+  } catch (error: any) {
+    sendResponse(res, 500, false, error.message, error);
+    // res.status(500).json({ success: false, message: error.message, error });
+  }
+});
+
+app.get("/api/users/:id", async (req: Request, res: Response) => {
+  const { id } = req.params;
+
+  try {
+    const result = await pool.query(
+      `
+            SELECT * FROM users WHERE id=$1
+            `,
+      [id],
+    );
+
+    if (result.rows.length === 0) {
+      sendResponse(res, 404, false, "User Not Found!", {});
+      //   res
+      //     .status(404)
+      //     .json({ success: false, message: "User Not Found!", data: {} });
+    }
+    sendResponse(
+      res,
+      200,
+      true,
+      "User Retrieved Successfully!",
+      result.rows[0],
+    );
+    // res.status(200).json({
+    //   success: true,
+    //   message: "User retrieved successfully!",
+    //   data: result.rows[0],
+    // });
+  } catch (error: any) {
+    sendResponse(res, 500, false, error.message, error);
+    // res.status(500).json({ success: false, message: error.message, error });
+  }
+});
+
+app.put("/api/users/:id", async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const { name, age, password, is_active } = req.body;
+
+  try {
+    const result = await pool.query(
+      `
+            UPDATE users 
+            SET 
+            name=COALESCE($1, name), 
+            age=COALESCE($2, age), 
+            password=COALESCE($3, password), 
+            is_active=COALESCE($4, is_active)
+
+            WHERE id=$5 RETURNING *
+            `,
+      [name, age, password, is_active, id],
+    );
+
+    if (result.rows.length === 0) {
+      sendResponse(res, 404, false, "User Not Found!", {});
+      //   res
+      //     .status(404)
+      //     .json({ success: false, message: "User Not Found!", data: {} });
+    }
+    sendResponse(res, 200, true, "User Updated Successfully!", result.rows[0]);
+    // res.status(200).json({
+    //   success: true,
+    //   message: "User updated successfully!",
+    //   data: result.rows[0],
+    // });
+  } catch (error: any) {
+    sendResponse(res, 500, false, error.message, error);
+    // res.status(500).json({ success: false, message: error.message, error });
+  }
+});
+
+app.delete("/api/users/:id", async (req: Request, res: Response) => {
+  const { id } = req.params;
+  try {
+    const result = await pool.query(
+      `
+            DELETE FROM users WHERE id=$1  
+            `,
+      [id],
+    );
+    if (result.rowCount === 0) {
+      sendResponse(res, 404, false, "User Not Found!", {});
+      //   res
+      //     .status(404)
+      //     .json({ success: false, message: "User Not Found!", data: {} });
+    }
+    sendResponse(res, 200, true, "User Deleted Successfully!", result.rows[0]);
+    // res.status(200).json({
+    //   success: true,
+    //   message: "User deleted successfully!",
+    //   data: {},
+    // });
+  } catch (error: any) {
+    sendResponse(res, 500, false, error.message, error);
+    // res.status(500).json({ success: false, message: error.message, error });
+  }
+});
+
+export default app

@@ -35,3 +35,7 @@ CREATE TABLE IF NOT EXISTS users()`)
             `,
       [name, age, password, is_active, id],
     );
+
+     - separate db connection to db folder
+     - all app logic moved to app.ts
+     - server only handles server connection
