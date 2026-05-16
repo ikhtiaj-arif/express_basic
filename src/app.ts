@@ -11,6 +11,7 @@ import { dbInit, pool } from "./db";
 import { userRoutes } from "./modules/user/user.route";
 import { profile } from "node:console";
 import { profileRoute } from "./modules/profile/profile.route";
+import { authRoute } from "./modules/auth/auth.route";
 
 const app: Application = express();
 const port = config.port;
@@ -37,6 +38,7 @@ app.use(express.urlencoded());
 
 app.use('/api/users', userRoutes)
 app.use('/api/profile', profileRoute)
+app.use('/api/auth', authRoute)
 
 
 
