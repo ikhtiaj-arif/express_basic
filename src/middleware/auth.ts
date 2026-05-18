@@ -3,8 +3,11 @@ import jwt, { type JwtPayload } from "jsonwebtoken";
 import config from "../config";
 import { pool } from "../db";
 import { sendResponse } from "../utils/sendResponse";
+import type { ROLES } from "../types";
 
-const auth = (...roles: any) => {
+
+
+const auth = (...roles: ROLES[]) => {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
       const token = req.headers.authorization;
