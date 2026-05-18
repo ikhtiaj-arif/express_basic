@@ -16,6 +16,7 @@ import fs from "fs";
 import path from "node:path";
 import logger from "./middleware/logger";
 import CookieParser from "cookie-parser"
+import cors from "cors"
 
 
 
@@ -31,6 +32,11 @@ app.use(express.text());
 //? extended true inside urlencoded allows to receive nested data
 app.use(express.urlencoded());
 app.use(CookieParser())
+const corsOptions = {
+  origin: 'http://localhost:3000',
+  // optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
+}
+app.use(cors(corsOptions))
 app.use(logger);
 
 app.get("/", (req: Request, res: Response) => {
