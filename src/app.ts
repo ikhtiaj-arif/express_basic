@@ -1,24 +1,16 @@
+import CookieParser from "cookie-parser";
+import cors from "cors";
 import express, {
-  response,
   type Application,
   type Request,
   type Response,
 } from "express";
-import { Pool } from "pg";
 import config from "./config";
-import { sendResponse } from "./utils/sendResponse";
-import { dbInit, pool } from "./db";
-import { userRoutes } from "./modules/user/user.route";
-import { profile } from "node:console";
-import { profileRoute } from "./modules/profile/profile.route";
-import { authRoute } from "./modules/auth/auth.route";
-import fs from "fs";
-import path from "node:path";
 import logger from "./middleware/logger";
-import CookieParser from "cookie-parser"
-import cors from "cors"
-
-
+import { authRoute } from "./modules/auth/auth.route";
+import { profileRoute } from "./modules/profile/profile.route";
+import { userRoutes } from "./modules/user/user.route";
+import globalErrorHandler from "./middleware/globalErrorHandler";
 
 const app: Application = express();
 const port = config.port;
@@ -31,12 +23,12 @@ app.use(express.text());
 // this middleware allows to receive request body to encoded format
 //? extended true inside urlencoded allows to receive nested data
 app.use(express.urlencoded());
-app.use(CookieParser())
+app.use(CookieParser());
 const corsOptions = {
-  origin: 'http://localhost:3000',
+  origin: "http://localhost:3000",
   // optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
-}
-app.use(cors(corsOptions))
+};
+app.use(cors(corsOptions));
 app.use(logger);
 
 app.get("/", (req: Request, res: Response) => {
@@ -50,5 +42,6 @@ app.get("/", (req: Request, res: Response) => {
 app.use("/api/users", userRoutes);
 app.use("/api/profile", profileRoute);
 app.use("/api/auth", authRoute);
-
+// Global Error Handling Middleware
+app.use(globalErrorHandler);
 export default app;

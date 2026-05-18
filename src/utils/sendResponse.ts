@@ -1,11 +1,26 @@
 import type { Response } from "express";
+// interface IResponse<T> {
+//   status: number;
+//   success: boolean;
+//   message: string;
+//   data?: T;
+//   error?: any;
+// }
 
-export const sendResponse = (
+//  const sendResponse = <T>(res: Response, data: IResponse<T>,) => {
+//   res.status(data.status).json({
+//     success: data.success,
+//     message: data.message,
+//     data: data.data,
+//     error: data.error,
+//   });
+// };
+export const sendResponse = <T>(
   res: Response,
   status: number,
   success: boolean,
   message: string,
-  data: Record<string, unknown> | any,
+  data?: T,
 ) => {
   res.status(status).json({
     success,
@@ -13,3 +28,4 @@ export const sendResponse = (
     data,
   });
 };
+export default sendResponse;
