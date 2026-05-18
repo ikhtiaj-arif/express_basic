@@ -4,7 +4,7 @@ import config from "../config";
 import { pool } from "../db";
 import { sendResponse } from "../utils/sendResponse";
 
-const auth = () => {
+const auth = (...roles: any) => {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
       const token = req.headers.authorization;
@@ -30,6 +30,12 @@ const auth = () => {
       if (!user.is_active) {
         sendResponse(res, 403, false, "Forbidden!", {});
       }
+      console.log(roles, user);
+
+      if (roles.length && !roles.includes(user.role)) {
+        sendResponse(res, 403, false, "Forbidden!", {});
+      }
+
       req.user = decoded;
 
       next();

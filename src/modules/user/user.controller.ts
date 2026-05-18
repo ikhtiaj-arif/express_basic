@@ -23,7 +23,7 @@ const createUser = async (req: Request, res: Response) => {
 };
 
 const getUser = async (req: Request, res: Response) => {
-  console.log("user.controller",req.user);
+  
   try {
     const result = await getUserFromDB();
     sendResponse(res, 200, true, "User Retrieved Successfully!", result.rows);
