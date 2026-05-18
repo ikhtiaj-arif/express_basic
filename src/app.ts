@@ -12,13 +12,21 @@ import { userRoutes } from "./modules/user/user.route";
 import { profile } from "node:console";
 import { profileRoute } from "./modules/profile/profile.route";
 import { authRoute } from "./modules/auth/auth.route";
-
+import fs from "fs";
+import path from "node:path";
+import logger from "./middleware/logger";
 const app: Application = express();
 const port = config.port;
 const connection_string = config.connection_string;
 
-
-
+// this middleware allows to receive request body to json  format
+app.use(express.json());
+// this middleware allows to receive request body to text  format
+app.use(express.text());
+// this middleware allows to receive request body to encoded format
+//? extended true inside urlencoded allows to receive nested data
+app.use(express.urlencoded());
+app.use(logger);
 
 app.get("/", (req: Request, res: Response) => {
   res.status(200).json({
@@ -28,22 +36,8 @@ app.get("/", (req: Request, res: Response) => {
   });
 });
 
-// this middleware allows to receive request body to json  format
-app.use(express.json());
-// this middleware allows to receive request body to text  format
-app.use(express.text());
-// this middleware allows to receive request body to encoded format
-//? extended true inside urlencoded allows to receive nested data
-app.use(express.urlencoded());
+app.use("/api/users", userRoutes);
+app.use("/api/profile", profileRoute);
+app.use("/api/auth", authRoute);
 
-app.use('/api/users', userRoutes)
-app.use('/api/profile', profileRoute)
-app.use('/api/auth', authRoute)
-
-
-
-
-
-
-
-export default app
+export default app;
