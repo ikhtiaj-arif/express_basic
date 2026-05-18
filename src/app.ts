@@ -15,6 +15,10 @@ import { authRoute } from "./modules/auth/auth.route";
 import fs from "fs";
 import path from "node:path";
 import logger from "./middleware/logger";
+import CookieParser from "cookie-parser"
+
+
+
 const app: Application = express();
 const port = config.port;
 const connection_string = config.connection_string;
@@ -26,6 +30,7 @@ app.use(express.text());
 // this middleware allows to receive request body to encoded format
 //? extended true inside urlencoded allows to receive nested data
 app.use(express.urlencoded());
+app.use(CookieParser())
 app.use(logger);
 
 app.get("/", (req: Request, res: Response) => {

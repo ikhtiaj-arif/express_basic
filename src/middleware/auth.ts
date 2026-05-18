@@ -33,7 +33,7 @@ const auth = (...roles: ROLES[]) => {
       if (!user.is_active) {
         sendResponse(res, 403, false, "Forbidden!", {});
       }
-      console.log(roles, user);
+    //   console.log(roles, user);
 
       if (roles.length && !roles.includes(user.role)) {
         sendResponse(res, 403, false, "Forbidden!", {});
