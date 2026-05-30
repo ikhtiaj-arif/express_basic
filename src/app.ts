@@ -6,15 +6,14 @@ import express, {
   type Response,
 } from "express";
 import config from "./config";
+import globalErrorHandler from "./middleware/globalErrorHandler";
 import logger from "./middleware/logger";
 import { authRoute } from "./modules/auth/auth.route";
 import { profileRoute } from "./modules/profile/profile.route";
 import { userRoutes } from "./modules/user/user.route";
-import globalErrorHandler from "./middleware/globalErrorHandler";
 
 const app: Application = express();
 const port = config.port;
-const connection_string = config.connection_string;
 
 // this middleware allows to receive request body to json  format
 app.use(express.json());
