@@ -9,6 +9,7 @@ import config from "./config";
 import globalErrorHandler from "./middleware/globalErrorHandler";
 import logger from "./middleware/logger";
 import { authRoute } from "./modules/auth/auth.route";
+import { orderRoutes } from "./modules/orders/order.route";
 import { profileRoute } from "./modules/profile/profile.route";
 import { userRoutes } from "./modules/user/user.route";
 
@@ -41,6 +42,7 @@ app.get("/", (req: Request, res: Response) => {
 app.use("/api/users", userRoutes);
 app.use("/api/profile", profileRoute);
 app.use("/api/auth", authRoute);
+app.use("/api/orders", orderRoutes);
 // Global Error Handling Middleware
 app.use(globalErrorHandler);
 export default app;
